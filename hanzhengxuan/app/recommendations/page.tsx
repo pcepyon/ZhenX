@@ -25,6 +25,7 @@ export default function RecommendationsPage() {
     }
     // Convert store recommendations to API format
     return storeRecommendations.map((rec, index) => ({
+      package_id: '',  // Store doesn't have package_id
       package_code: rec.packageCode,
       package_name: rec.name,
       price_tier: rec.priceTier,

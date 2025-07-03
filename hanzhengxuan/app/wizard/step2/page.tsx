@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useConcerns } from '@/hooks/api/useConcerns';
+import { useCategories } from '@/hooks/api/useCategories';
+import { useSaveWizardInput } from '@/hooks/api/useWizardInputs';
 import { WizardHeader } from '@/components/wizard/WizardHeader';
 import { ConcernSection } from '@/components/wizard/ConcernSection';
 import { WizardFooter } from '@/components/wizard/WizardFooter';
@@ -13,40 +15,68 @@ export default function WizardStep2() {
   const router = useRouter();
   const { 
     sessionId,
-    selectedCategories, 
-    selectedConcerns,
-    toggleConcern
+    selectedCategory, 
+    selectedConcern,
+    setConcern
   } = useAppStore();
 
-  // Fetch concerns for selected categories
-  const { data: concerns = [], isLoading, error } = useConcerns(selectedCategories);
+  // Fetch categories to get category info
+  const { data: categories } = useCategories();
+  
+  // Fetch concerns for selected category
+  const { data: concerns = [], isLoading, error } = useConcerns(
+    selectedCategory ? [selectedCategory] : []
+  );
+  
+  const { mutate: saveInput, isPending: isSaving } = useSaveWizardInput();
 
-  // Redirect to step1 if no categories selected
+  // Redirect to step1 if no category selected
   useEffect(() => {
     if (!sessionId) {
       router.push('/');
-    } else if (selectedCategories.length === 0) {
+    } else if (!selectedCategory) {
       router.push('/wizard/step1');
     }
-  }, [sessionId, selectedCategories, router]);
+  }, [sessionId, selectedCategory, router]);
 
   const handleToggleConcern = (concern: Concern) => {
-    // Convert API concern to store concern format
-    toggleConcern({
-      id: concern.id,
-      categoryId: concern.category_id,
-      name: concern.name,
-      severity: 3 // Default severity
-    });
+    // If same concern is clicked, deselect it
+    if (selectedConcern?.id === concern.id) {
+      setConcern(null);
+    } else {
+      // Convert API concern to store concern format
+      setConcern({
+        id: concern.id,
+        categoryId: concern.category_id,
+        name: concern.name,
+        severity: 3 // Default severity
+      });
+    }
   };
 
   const handleNext = () => {
-    if (selectedConcerns.length > 0) {
-      router.push('/wizard/step3');
+    if (selectedConcern) {
+      // Save the selected concern
+      saveInput(
+        {
+          step_number: 2,
+          selected_concerns: [selectedConcern.id]
+        },
+        {
+          onSuccess: () => {
+            router.push('/wizard/step3');
+          },
+          onError: (error) => {
+            console.error('Failed to save concern:', error);
+            // Still navigate even if save fails
+            router.push('/wizard/step3');
+          }
+        }
+      );
     }
   };
 
-  const canProceed = selectedConcerns.length > 0;
+  const canProceed = !!selectedConcern;
 
   if (isLoading) {
     return (
@@ -93,29 +123,29 @@ export default function WizardStep2() {
             구체적으로 어떤 부분이 고민이야?
           </h1>
           <p className="text-sm text-gray-600 mb-6">
-            해당하는 고민을 모두 선택해줘 (복수 선택 가능)
+            가장 고민되는 부분을 하나 선택해주세요
           </p>
           
-          {/* Concern sections by category */}
-          {selectedCategories.map((categoryId) => (
+          {/* Concern section for selected category */}
+          {selectedCategory && (
             <ConcernSection
-              key={categoryId}
-              categoryId={categoryId}
+              key={selectedCategory}
+              categoryId={selectedCategory}
               categoryName=""
               categoryIcon=""
               concerns={concerns}
-              selectedConcerns={selectedConcerns}
+              selectedConcerns={selectedConcern ? [selectedConcern] : []}
               onToggleConcern={handleToggleConcern}
             />
-          ))}
+          )}
           
-          {/* Selection counter */}
-          {selectedConcerns.length > 0 && (
+          {/* Selection indicator */}
+          {selectedConcern && (
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 <span className="font-semibold text-primary-mint">
-                  {selectedConcerns.length}개
-                </span>의 고민을 선택했어요
+                  {selectedConcern.name}
+                </span>을(를) 선택했어요
               </p>
             </div>
           )}
@@ -125,7 +155,8 @@ export default function WizardStep2() {
       {/* Footer */}
       <WizardFooter 
         onNext={handleNext} 
-        disabled={!canProceed}
+        disabled={!canProceed || isSaving}
+        loading={isSaving}
       />
     </div>
   );

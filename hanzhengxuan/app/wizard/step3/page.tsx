@@ -22,8 +22,8 @@ export default function WizardStep3() {
   const router = useRouter();
   const { 
     sessionId,
-    selectedCategories,
-    selectedConcerns,
+    selectedCategory,
+    selectedConcern,
     personalFactors: selectedFactors,
     togglePersonalFactor
   } = useAppStore();
@@ -38,12 +38,12 @@ export default function WizardStep3() {
   useEffect(() => {
     if (!sessionId) {
       router.push('/');
-    } else if (selectedCategories.length === 0) {
+    } else if (!selectedCategory) {
       router.push('/wizard/step1');
-    } else if (selectedConcerns.length === 0) {
+    } else if (!selectedConcern) {
       router.push('/wizard/step2');
     }
-  }, [sessionId, selectedCategories, selectedConcerns, router]);
+  }, [sessionId, selectedCategory, selectedConcern, router]);
 
   const handleComplete = async () => {
     if (isSubmitting) return;
@@ -51,14 +51,16 @@ export default function WizardStep3() {
     setIsSubmitting(true);
     
     try {
-      // Save all wizard inputs
+      // Save personal factors (preferences) for step 3
+      const personalFactorData = {
+        budget_range: selectedFactors.find(f => f.id === 'budget_conscious')?.checked ? 'economy' : 'standard',
+        recovery_time: selectedFactors.find(f => f.id === 'quick_recovery')?.checked ? 'minimal' : 'moderate',
+        stay_duration: selectedFactors.find(f => f.id === 'one_day_preferred')?.checked ? '1_day' : '3_days'
+      };
+      
       saveInputs({
         step_number: 3,
-        selected_categories: selectedCategories,
-        selected_concerns: selectedConcerns.map(c => c.id),
-        personal_factors: selectedFactors
-          .filter(f => f.checked)
-          .map(f => f.id)
+        selected_concerns: personalFactorData
       });
       
       // Show completion animation

@@ -28,7 +28,12 @@ export function useConcerns(categoryIds: string[]) {
       const responses = await Promise.all(promises);
       
       // Flatten all concerns from different categories
-      return responses.flatMap(response => response.concerns);
+      return responses.flatMap(response => {
+        if (response.success && response.data) {
+          return response.data.concerns || [];
+        }
+        return [];
+      });
     },
     enabled: categoryIds.length > 0,
     staleTime: 1000 * 60 * 60, // 1 hour

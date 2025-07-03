@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { PriceBreakdown } from './PriceBreakdown';
@@ -21,6 +22,7 @@ export function PackageDetailModal({
   isOpen,
   onClose
 }: PackageDetailModalProps) {
+  const router = useRouter();
   const { addInterest, removeInterest, isInterested } = useAppStore();
   const { packageData, priceBreakdown, treatmentTimeline, isLoading } = usePackageDetail(packageCode);
   const [isLiked, setIsLiked] = useState(packageCode ? isInterested(packageCode) : false);
@@ -183,8 +185,13 @@ export function PackageDetailModal({
                 size="lg"
                 className="flex-1"
                 onClick={() => {
-                  // TODO: Navigate to quote generation
-                  console.log('Generate quote for', packageCode);
+                  // Add package to interests if not already added
+                  if (!isLiked) {
+                    addInterest(packageCode);
+                  }
+                  // Navigate to interests page
+                  router.push('/interests');
+                  onClose();
                 }}
               >
                 이 패키지로 견적받기

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api/client';
+import { apiClient, ApiResponse } from '@/lib/api/client';
 
 interface CreateSessionRequest {
   language?: string;
@@ -12,9 +12,9 @@ interface SessionResponse {
 }
 
 export function useCreateSession() {
-  return useMutation<SessionResponse, Error, CreateSessionRequest>({
+  return useMutation<ApiResponse<SessionResponse>, Error, CreateSessionRequest>({
     mutationFn: async (data) => {
-      return apiClient.post('/sessions', data);
+      return apiClient.post<SessionResponse>('/sessions', data);
     },
   });
 }

@@ -30,9 +30,11 @@ export default function LandingPage() {
     createSession(
       { language: 'zh-CN' },
       {
-        onSuccess: (data) => {
-          setSessionId(data.session_id);
-          router.push('/wizard/step1');
+        onSuccess: (response) => {
+          if (response.data) {
+            setSessionId(response.data.session_id);
+            router.push('/wizard/step1');
+          }
         },
         onError: (error) => {
           console.error('Failed to create session:', error);

@@ -11,9 +11,7 @@ export interface WizardInput {
 
 interface SaveInputPayload {
   step_number: number
-  selected_categories?: string[]
-  selected_concerns?: string[]
-  personal_factors?: string[]
+  selected_concerns: any  // This field is used for all step data
 }
 
 export function useSaveWizardInput() {

@@ -18,27 +18,32 @@ export interface QuotePackage {
 }
 
 export interface Quote {
-  id: string
   quote_id: string
-  session_id: string
-  selected_packages: string[]
-  total_price_krw: number
-  total_discount_krw: number
-  final_price_krw: number
-  total_price_cny: number
-  total_discount_cny: number
-  final_price_cny: number
-  exchange_rate: number
-  is_expired: boolean
-  remaining_days: number
-  expires_at: string
   created_at: string
+  expires_at: string
+  remaining_days: number
+  packages?: Array<{
+    package_code: string
+    name_ko: string
+    name_cn: string
+    category_id: string
+    price_tier: string
+    final_price_krw: number
+    final_price_cny: number
+  }>
+  package_count: number
+  pricing: {
+    total_price_krw: number
+    total_price_cny: number
+    currency: string
+    exchange_rate: number
+  }
   personal_info?: {
     name?: string
     visit_date?: string
     memo?: string
   }
-  packages?: QuotePackage[]
+  share_url: string
 }
 
 interface CreateQuotePayload {
@@ -46,9 +51,7 @@ interface CreateQuotePayload {
   notes?: string
 }
 
-interface QuoteResponse {
-  quote: Quote
-}
+type QuoteResponse = Quote
 
 export function useCreateQuote() {
   const sessionId = useAppStore((state) => state.sessionId)
@@ -60,7 +63,7 @@ export function useCreateQuote() {
         throw new Error('No session ID available')
       }
       
-      const response = await apiClient.post<QuoteResponse>(
+      const response = await apiClient.post<{ quote: Quote }>(
         `/sessions/${sessionId}/quotes`,
         payload
       )
@@ -78,13 +81,13 @@ export function useQuote(quoteId: string) {
   return useQuery({
     queryKey: ['quote', quoteId],
     queryFn: async () => {
-      const response = await apiClient.get<QuoteResponse>(`/quotes/${quoteId}`)
+      const response = await apiClient.get<Quote>(`/quotes/${quoteId}`)
       
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch quote')
       }
       
-      return response.data.quote
+      return response.data
     },
     enabled: !!quoteId,
     staleTime: 5 * 60 * 1000, // 5 minutes

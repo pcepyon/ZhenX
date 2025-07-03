@@ -63,9 +63,33 @@ export default function QuotePage() {
   const params = useParams();
   const quoteId = params.quoteId as string;
   
-  // Use mock data in development
-  const { data: quote, isLoading, error } = useQuote(quoteId);
-  const quoteData = quote || getMockQuoteData(quoteId);
+  // Use API data
+  const { data: apiData, isLoading, error } = useQuote(quoteId);
+  
+  // Transform API data to match the expected structure
+  const quoteData = apiData ? {
+    ...apiData,
+    quote_id: apiData.quote_id,
+    total_price_krw: apiData.pricing?.total_price_krw || 0,
+    total_discount_krw: 0, // API doesn't provide discount info
+    final_price_krw: apiData.pricing?.total_price_krw || 0,
+    total_price_cny: apiData.pricing?.total_price_cny || 0,
+    total_discount_cny: 0,
+    final_price_cny: apiData.pricing?.total_price_cny || 0,
+    exchange_rate: apiData.pricing?.exchange_rate || 190,
+    is_expired: false,
+    remaining_days: apiData.remaining_days || 0,
+    expires_at: apiData.expires_at,
+    created_at: apiData.created_at,
+    personal_info: apiData.personal_info || {},
+    packages: apiData.packages?.map(pkg => ({
+      ...pkg,
+      original_price: pkg.final_price_krw,
+      final_price: pkg.final_price_krw,
+      duration_minutes: 90, // Default since API doesn't provide
+      treatments: [] // API doesn't provide treatment details
+    })) || []
+  } : getMockQuoteData(quoteId);
   
   // Check if quote is expired
   if (!isLoading && (error || !quoteData || quoteData.is_expired)) {

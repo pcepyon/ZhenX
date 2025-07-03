@@ -42,8 +42,8 @@ export interface AppState {
   setSessionId: (id: string) => void
   
   // Wizard state
-  selectedCategories: string[]
-  selectedConcerns: Concern[]
+  selectedCategory: string | null
+  selectedConcern: Concern | null
   personalFactors: PersonalFactor[]
   
   // Recommendation state
@@ -54,14 +54,12 @@ export interface AppState {
   interestedPackages: string[]
   
   // Actions - Categories
-  addCategory: (category: string) => void
-  removeCategory: (category: string) => void
-  clearCategories: () => void
+  setCategory: (category: string | null) => void
+  clearCategory: () => void
   
   // Actions - Concerns
-  toggleConcern: (concern: Concern) => void
-  clearConcerns: () => void
-  setConcernsByCategoryId: (categoryId: string, concerns: Concern[]) => void
+  setConcern: (concern: Concern | null) => void
+  clearConcern: () => void
   
   // Actions - Personal Factors
   togglePersonalFactor: (factorId: string) => void

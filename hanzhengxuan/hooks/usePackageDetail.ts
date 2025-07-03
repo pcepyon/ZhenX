@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePackage } from '@/hooks/api/usePackages';
+import { usePackageDetailsByCode } from '@/hooks/api/usePackages';
 
 interface PackageItem {
   treatment: {
@@ -23,7 +23,7 @@ interface PriceBreakdown {
 }
 
 export function usePackageDetail(packageCode: string | null) {
-  const { data: packageData, isLoading, error } = usePackage(packageCode || '');
+  const { data: packageData, isLoading, error } = usePackageDetailsByCode(packageCode || '');
   const [priceBreakdown, setPriceBreakdown] = useState<PriceBreakdown | null>(null);
   
   // Calculate price breakdown when package data is loaded

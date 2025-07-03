@@ -25,6 +25,10 @@ const tierColors = {
 };
 
 export function QuotePackages({ packages, className }: QuotePackagesProps) {
+  if (!packages || packages.length === 0) {
+    return null;
+  }
+  
   return (
     <section className={cn("", className)}>
       <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -73,10 +77,10 @@ export function QuotePackages({ packages, className }: QuotePackagesProps) {
               {/* Treatments list */}
               <div className="px-5 py-4">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">
-                  구성 시술 ({pkg.treatments.length}개)
+                  구성 시술 ({pkg.treatments?.length || 0}개)
                 </h4>
                 <div className="space-y-2">
-                  {pkg.treatments.map((treatment, tIndex) => (
+                  {pkg.treatments?.map((treatment, tIndex) => (
                     <div 
                       key={tIndex}
                       className="flex items-center justify-between text-sm"

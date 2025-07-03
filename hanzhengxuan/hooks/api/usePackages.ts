@@ -72,3 +72,20 @@ export function usePackageDetails(packageId: string) {
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }
+
+export function usePackageDetailsByCode(packageCode: string) {
+  return useQuery({
+    queryKey: ['package-by-code', packageCode],
+    queryFn: async () => {
+      const response = await apiClient.get<{ package: Package }>(`/packages/by-code/${packageCode}`)
+      
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'Failed to fetch package details')
+      }
+      
+      return response.data.package
+    },
+    enabled: !!packageCode,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
+}

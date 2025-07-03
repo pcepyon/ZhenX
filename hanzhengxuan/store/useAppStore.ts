@@ -7,8 +7,8 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       // Initial state
       sessionId: '',
-      selectedCategories: [],
-      selectedConcerns: [],
+      selectedCategory: null,
+      selectedConcern: null,
       personalFactors: defaultPersonalFactors,
       recommendations: [],
       interestedPackages: [],
@@ -17,49 +17,21 @@ export const useAppStore = create<AppState>()(
       setSessionId: (id) => set({ sessionId: id }),
       
       // Category actions
-      addCategory: (category) => set((state) => {
-        if (state.selectedCategories.includes(category)) {
-          return state
-        }
-        // Maximum 3 categories allowed
-        const newCategories = [...state.selectedCategories, category].slice(0, 3)
-        return { selectedCategories: newCategories }
-      }),
-      
-      removeCategory: (category) => set((state) => ({
-        selectedCategories: state.selectedCategories.filter(c => c !== category),
-        // Also remove concerns from this category
-        selectedConcerns: state.selectedConcerns.filter(concern => concern.categoryId !== category)
+      setCategory: (category) => set((state) => ({
+        selectedCategory: category,
+        // Clear concern when changing category
+        selectedConcern: category !== state.selectedCategory ? null : state.selectedConcern
       })),
       
-      clearCategories: () => set({ 
-        selectedCategories: [], 
-        selectedConcerns: [] 
+      clearCategory: () => set({ 
+        selectedCategory: null, 
+        selectedConcern: null 
       }),
       
       // Concern actions
-      toggleConcern: (concern) => set((state) => {
-        const exists = state.selectedConcerns.find(c => c.id === concern.id)
-        if (exists) {
-          return {
-            selectedConcerns: state.selectedConcerns.filter(c => c.id !== concern.id)
-          }
-        } else {
-          return {
-            selectedConcerns: [...state.selectedConcerns, concern]
-          }
-        }
-      }),
+      setConcern: (concern) => set({ selectedConcern: concern }),
       
-      clearConcerns: () => set({ selectedConcerns: [] }),
-      
-      setConcernsByCategoryId: (categoryId, concerns) => set((state) => {
-        // Remove old concerns from this category and add new ones
-        const otherConcerns = state.selectedConcerns.filter(c => c.categoryId !== categoryId)
-        return {
-          selectedConcerns: [...otherConcerns, ...concerns]
-        }
-      }),
+      clearConcern: () => set({ selectedConcern: null }),
       
       // Personal factor actions
       togglePersonalFactor: (factorId) => set((state) => ({
@@ -97,16 +69,16 @@ export const useAppStore = create<AppState>()(
       
       // Reset actions
       resetWizard: () => set({
-        selectedCategories: [],
-        selectedConcerns: [],
+        selectedCategory: null,
+        selectedConcern: null,
         personalFactors: defaultPersonalFactors,
         recommendations: []
       }),
       
       resetAll: () => set({
         sessionId: '',
-        selectedCategories: [],
-        selectedConcerns: [],
+        selectedCategory: null,
+        selectedConcern: null,
         personalFactors: defaultPersonalFactors,
         recommendations: [],
         interestedPackages: []
