@@ -38,8 +38,10 @@ export function QuotePackages({ packages, className }: QuotePackagesProps) {
       <div className="space-y-4">
         {packages.map((pkg, index) => {
           const tier = tierColors[pkg.price_tier] || tierColors.basic;
-          const discountPercent = pkg.original_price > pkg.final_price
-            ? Math.round((1 - pkg.final_price / pkg.original_price) * 100)
+          const originalPrice = pkg.original_price || 0;
+          const finalPrice = pkg.final_price || 0;
+          const discountPercent = originalPrice > finalPrice && originalPrice > 0
+            ? Math.round((1 - finalPrice / originalPrice) * 100)
             : 0;
           
           return (
@@ -68,7 +70,7 @@ export function QuotePackages({ packages, className }: QuotePackagesProps) {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">
-                      {Math.floor(pkg.duration_minutes / 60)}시간 {pkg.duration_minutes % 60}분
+                      {pkg.duration_minutes ? `${Math.floor(pkg.duration_minutes / 60)}시간 ${pkg.duration_minutes % 60}분` : '시간 미정'}
                     </p>
                   </div>
                 </div>
@@ -109,7 +111,7 @@ export function QuotePackages({ packages, className }: QuotePackagesProps) {
                     {discountPercent > 0 && (
                       <>
                         <span className="text-sm text-gray-500 line-through">
-                          ₩{pkg.original_price.toLocaleString('ko-KR')}
+                          ₩{originalPrice.toLocaleString('ko-KR')}
                         </span>
                         <span className="text-sm font-medium text-red-600">
                           {discountPercent}% OFF
@@ -119,10 +121,10 @@ export function QuotePackages({ packages, className }: QuotePackagesProps) {
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
-                      ₩{pkg.final_price.toLocaleString('ko-KR')}
+                      ₩{finalPrice.toLocaleString('ko-KR')}
                     </p>
                     <p className="text-sm text-gray-600">
-                      ≈ ¥{Math.round(pkg.final_price / 190).toLocaleString('zh-CN')}
+                      ≈ ¥{Math.round(finalPrice / 190).toLocaleString('zh-CN')}
                     </p>
                   </div>
                 </div>

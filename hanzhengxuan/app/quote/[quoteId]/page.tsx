@@ -76,7 +76,9 @@ export default function QuotePage() {
     total_price_cny: apiData.pricing?.total_price_cny || 0,
     total_discount_cny: 0,
     final_price_cny: apiData.pricing?.total_price_cny || 0,
-    exchange_rate: apiData.pricing?.exchange_rate || 190,
+    exchange_rate: typeof apiData.pricing?.exchange_rate === 'object' 
+      ? apiData.pricing.exchange_rate.rate 
+      : (apiData.pricing?.exchange_rate || 190),
     is_expired: false,
     remaining_days: apiData.remaining_days || 0,
     expires_at: apiData.expires_at,
@@ -84,8 +86,8 @@ export default function QuotePage() {
     personal_info: apiData.personal_info || {},
     packages: apiData.packages?.map(pkg => ({
       ...pkg,
-      original_price: pkg.final_price_krw,
-      final_price: pkg.final_price_krw,
+      original_price: pkg.final_price_krw || pkg.final_price || 0,
+      final_price: pkg.final_price_krw || pkg.final_price || 0,
       duration_minutes: 90, // Default since API doesn't provide
       treatments: [] // API doesn't provide treatment details
     })) || []

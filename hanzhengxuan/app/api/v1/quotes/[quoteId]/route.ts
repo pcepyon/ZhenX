@@ -72,6 +72,7 @@ export async function GET(
       name_cn: pkg.name_cn,
       category_id: pkg.category_id,
       price_tier: pkg.price_tier,
+      final_price: pkg.final_price,
       final_price_krw: pkg.final_price,
       final_price_cny: convertToCNY(pkg.final_price)
     })) || []

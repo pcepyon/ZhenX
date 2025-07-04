@@ -7,10 +7,12 @@ export interface QuotePackage {
   name_ko: string
   name_cn: string
   price_tier: 'basic' | 'premium' | 'luxury'
-  original_price: number
-  final_price: number
-  duration_minutes: number
-  treatments: Array<{
+  original_price?: number
+  final_price?: number
+  final_price_krw?: number
+  final_price_cny?: number
+  duration_minutes?: number
+  treatments?: Array<{
     name_ko: string
     name_cn: string
     quantity: number
@@ -51,11 +53,8 @@ interface CreateQuotePayload {
   notes?: string
 }
 
-type QuoteResponse = Quote
-
 export function useCreateQuote() {
   const sessionId = useAppStore((state) => state.sessionId)
-  const queryClient = useQuery
   
   return useMutation({
     mutationFn: async (payload: CreateQuotePayload) => {
@@ -91,9 +90,9 @@ export function useQuote(quoteId: string) {
     },
     enabled: !!quoteId,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: (data) => {
+    refetchInterval: ({ state }) => {
       // Stop refetching if quote is expired
-      if (data?.is_expired) return false
+      if (state.data && state.data.remaining_days <= 0) return false
       // Refetch every minute to update remaining days
       return 60 * 1000
     },
