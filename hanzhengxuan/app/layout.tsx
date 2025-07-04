@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Noto_Sans_KR, Noto_Sans_SC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import { Providers } from './providers'
+import { NavigationHeader } from '@/components/common/NavigationHeader'
 import './globals.css'
 
 const notoSansKR = Noto_Sans_KR({
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="zh-CN" className={`${notoSansKR.variable} ${notoSansSC.variable}`}>
       <body className="min-h-screen font-sans antialiased">
         <Providers>
+          <NavigationHeader />
           {children}
         </Providers>
         <Analytics />

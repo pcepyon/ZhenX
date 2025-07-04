@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useSaveWizardInput } from '@/hooks/api/useWizardInputs';
 import { useCreateRecommendations } from '@/hooks/api/useRecommendations';
-import { WizardHeader } from '@/components/wizard/WizardHeader';
 import { PersonalFactorItem } from '@/components/wizard/PersonalFactorItem';
 import { WizardFooter } from '@/components/wizard/WizardFooter';
 import { CompletionAnimation } from '@/components/wizard/CompletionAnimation';
@@ -95,7 +94,6 @@ export default function WizardStep3() {
   return (
     <>
       <div className="min-h-screen bg-gray-50">
-        <WizardHeader currentStep={3} totalSteps={3} />
         
         {/* Main content */}
         <main className="px-5 py-6 pb-24">

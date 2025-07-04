@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import { usePackages } from '@/hooks/api/usePackages';
-import { InterestHeader } from '@/components/interest/InterestHeader';
 import { InterestCard } from '@/components/interest/InterestCard';
 import { PriceSummary } from '@/components/interest/PriceSummary';
 import { EmptyState } from '@/components/interest/EmptyState';
@@ -125,17 +124,44 @@ export default function InterestsPage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <InterestHeader
-        totalCount={interestedPackages.length}
-        selectedCount={selectedPackages.size}
-        isSelectMode={isSelectMode}
-        onToggleSelectMode={handleToggleSelectMode}
-        onClearAll={clearAllInterests}
-      />
-      
       {/* Main content */}
       <main className="px-5 py-6">
+        {/* Interest summary */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">
+                관심 패키지 {interestedPackages.length}개
+              </h1>
+              {isSelectMode && (
+                <p className="text-sm text-gray-600 mt-1">
+                  {selectedPackages.size}개 선택됨
+                </p>
+              )}
+            </div>
+            {interestedPackages.length > 0 && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleSelectMode}
+                >
+                  {isSelectMode ? '완료' : '선택'}
+                </Button>
+                {!isSelectMode && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllInterests}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    전체 삭제
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
         <div className="max-w-2xl mx-auto">
           {interestedPackageDetails.length === 0 ? (
             <EmptyState onExplore={handleExplore} />

@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useCategories } from '@/hooks/api/useCategories';
 import { useSaveWizardInput } from '@/hooks/api/useWizardInputs';
-import { WizardHeader } from '@/components/wizard/WizardHeader';
 import { CategoryCard } from '@/components/wizard/CategoryCard';
 import { WizardFooter } from '@/components/wizard/WizardFooter';
 
@@ -79,8 +78,6 @@ export default function WizardStep1() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <WizardHeader currentStep={1} totalSteps={3} />
-      
       {/* Main content */}
       <main className="px-5 py-6 pb-24">
         <div className="max-w-md mx-auto">

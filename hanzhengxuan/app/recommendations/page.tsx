@@ -106,9 +106,9 @@ export default function RecommendationsPage() {
   
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header */}
-      <header className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 z-40">
-        <div className="max-w-2xl mx-auto">
+      {/* Main content */}
+      <main className="px-5 py-6">
+        <div className="max-w-2xl mx-auto mb-6">
           <h1 className="text-xl font-bold text-gray-900">
             너를 위한 패키지 {filteredRecommendations.length}개를 찾았어!
           </h1>
@@ -116,10 +116,6 @@ export default function RecommendationsPage() {
             AI가 분석한 맞춤 추천이야
           </p>
         </div>
-      </header>
-      
-      {/* Main content */}
-      <main className="px-5 py-6">
         <div className="max-w-2xl mx-auto">
           {/* Price tier filter */}
           <div className="mb-6">

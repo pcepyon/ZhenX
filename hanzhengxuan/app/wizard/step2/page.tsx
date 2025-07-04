@@ -6,7 +6,6 @@ import { useAppStore } from '@/store/useAppStore';
 import { useConcerns } from '@/hooks/api/useConcerns';
 import { useCategories } from '@/hooks/api/useCategories';
 import { useSaveWizardInput } from '@/hooks/api/useWizardInputs';
-import { WizardHeader } from '@/components/wizard/WizardHeader';
 import { ConcernSection } from '@/components/wizard/ConcernSection';
 import { WizardFooter } from '@/components/wizard/WizardFooter';
 import { Concern } from '@/hooks/api/useConcerns';
@@ -81,7 +80,6 @@ export default function WizardStep2() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <WizardHeader currentStep={2} totalSteps={3} />
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-mint"></div>
@@ -95,7 +93,6 @@ export default function WizardStep2() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <WizardHeader currentStep={2} totalSteps={3} />
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <p className="text-red-500 mb-2">오류가 발생했습니다</p>
@@ -113,7 +110,6 @@ export default function WizardStep2() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <WizardHeader currentStep={2} totalSteps={3} />
       
       {/* Main content */}
       <main className="px-5 py-6 pb-24">

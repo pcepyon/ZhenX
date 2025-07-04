@@ -86,37 +86,17 @@ export default function QuoteCreatePage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 z-40">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              견적서 만들기
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              선택한 패키지로 견적서를 생성해요
-            </p>
-          </div>
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="뒤로가기"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path 
-                d="M19 12H5M5 12L12 19M5 12L12 5" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </header>
-      
       {/* Main content */}
       <main className="px-5 py-6">
+        {/* Page title */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <h1 className="text-xl font-bold text-gray-900">
+            견적서 만들기
+          </h1>
+          <p className="text-sm text-gray-600 mt-1">
+            선택한 패키지로 견적서를 생성해요
+          </p>
+        </div>
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Package summary */}
           <PackageSummary packages={selectedPackages} />
