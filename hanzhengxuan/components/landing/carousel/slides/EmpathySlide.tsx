@@ -85,7 +85,7 @@ export function EmpathySlide() {
         animate={{ scale: 1 }}
         transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-slate-100" />
       </motion.div>
 
       {/* Content Container */}

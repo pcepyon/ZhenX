@@ -23,7 +23,7 @@ export function LanguageSlide() {
   return (
     <div className="relative h-full flex items-center justify-center overflow-hidden">
       {/* Warm gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-200 via-emerald-100 to-teal-100 -z-10" />
 
       {/* Content */}
       <div className="w-full max-w-5xl px-6 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">

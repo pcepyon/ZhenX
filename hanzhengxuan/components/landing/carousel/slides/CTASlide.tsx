@@ -49,9 +49,9 @@ export function CTASlide({ onStartClick, isLoading }: CTASlideProps) {
         className="absolute inset-0 -z-10"
         animate={{
           background: [
-            'linear-gradient(to bottom right, #ffffff, #f9fafb)',
-            'linear-gradient(to bottom right, #f9fafb, #f3f4f6)',
-            'linear-gradient(to bottom right, #ffffff, #f9fafb)',
+            'linear-gradient(to bottom right, #e0f2fe, #ddd6fe)',
+            'linear-gradient(to bottom right, #ddd6fe, #fce7f3)',
+            'linear-gradient(to bottom right, #fce7f3, #e0f2fe)',
           ],
         }}
         transition={{ duration: 10, repeat: Infinity }}

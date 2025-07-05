@@ -14,7 +14,7 @@ export function TimeSlide() {
   return (
     <div className="relative h-full flex items-center justify-center overflow-hidden">
       {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-pink-50 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-200 via-pink-100 to-orange-100 -z-10" />
 
       {/* Content */}
       <div className="w-full max-w-5xl px-6">
