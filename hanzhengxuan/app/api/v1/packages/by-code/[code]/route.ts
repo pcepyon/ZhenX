@@ -21,10 +21,18 @@ export async function GET(
     
     const supabase = await createClient()
     
-    // Get package details by package_code
+    // Get package details with package items and treatments
     const { data: packageData, error } = await supabase
       .from('packages')
-      .select('*')
+      .select(`
+        *,
+        package_items (
+          *,
+          treatment:treatments_base (
+            *
+          )
+        )
+      `)
       .eq('package_code', packageCode)
       .eq('is_active', true)
       .single()
@@ -38,6 +46,21 @@ export async function GET(
         }, 
         { status: 404 }
       )
+    }
+    
+    // Get treatment info for all treatments in the package
+    const treatmentCodes = packageData.package_items?.map((item: any) => 
+      item.treatment?.code
+    ).filter(Boolean) || []
+    
+    let treatmentInfos: any[] = []
+    if (treatmentCodes.length > 0) {
+      const { data: infos } = await supabase
+        .from('treatment_info')
+        .select('*')
+        .in('treatment_code', treatmentCodes)
+      
+      treatmentInfos = infos || []
     }
     
     // Calculate price breakdown
@@ -61,9 +84,18 @@ export async function GET(
       exchange_rate: exchangeRate
     }
     
+    // Enrich package items with treatment info
+    const enrichedPackageItems = packageData.package_items?.map((item: any) => ({
+      ...item,
+      treatment_info: treatmentInfos.find(info => 
+        info.treatment_code === item.treatment?.code
+      )
+    })) || []
+    
     // Format the response
     const formattedPackage = {
       ...packageData,
+      package_items: enrichedPackageItems,
       price_breakdown: priceBreakdown
     }
     

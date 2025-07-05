@@ -8,13 +8,17 @@ interface ModalProps {
   onClose: () => void
   position?: 'center' | 'bottom'
   children: React.ReactNode
+  className?: string
+  showCloseButton?: boolean
 }
 
 export function Modal({
   open,
   onClose,
   position = 'center',
-  children
+  children,
+  className,
+  showCloseButton = true
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -79,30 +83,33 @@ export function Modal({
             ? 'w-full max-w-md' 
             : 'fixed bottom-0 left-0 right-0 rounded-b-none max-h-[80vh]'
           }
+          ${className || ''}
         `}
         role="dialog"
         aria-modal="true"
       >
         {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors z-10"
-          aria-label="关闭"
-        >
-          <svg
-            className="w-6 h-6 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {showCloseButton && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors z-10"
+            aria-label="닫기"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <svg
+              className="w-6 h-6 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
 
         {/* Content */}
         <div className="overflow-y-auto max-h-[calc(100vh-8rem)]">

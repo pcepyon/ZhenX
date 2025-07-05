@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { PriceBreakdown } from './PriceBreakdown';
-import { TreatmentTimeline } from './TreatmentTimeline';
+import { TreatmentList } from './TreatmentList';
+import { PackageStorySection } from './PackageStorySection';
+import { PriceTimeBar } from './PriceTimeBar';
 import { DoctorInfo } from './DoctorInfo';
 import { TreatmentBottomSheet } from '@/components/treatment/TreatmentBottomSheet';
 import { usePackageDetail } from '@/hooks/usePackageDetail';
 import { useAppStore } from '@/store/useAppStore';
+import { packageStories } from '@/lib/data/packageStories';
 
 interface PackageDetailModalProps {
   packageCode: string | null;
@@ -40,14 +43,11 @@ export function PackageDetailModal({
     setIsLiked(!isLiked);
   };
   
-  const formatDuration = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}시간 ${mins > 0 ? `${mins}분` : ''}`;
-    }
-    return `${mins}분`;
-  };
+  // Get package story data
+  const packageStory = packageCode ? packageStories[packageCode] : null;
+  
+  // Calculate total duration
+  const totalDuration = treatmentTimeline.reduce((sum, t) => sum + t.duration, 0);
   
   const handleTreatmentClick = (treatmentCode: string) => {
     setSelectedTreatment(treatmentCode);
@@ -73,81 +73,35 @@ export function PackageDetailModal({
         </div>
       ) : packageData ? (
         <>
-          {/* Modal Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 p-6 pb-4">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-900">
-                  {packageData.name_ko}
-                </h2>
-                {packageData.name_cn && (
-                  <p className="text-sm text-gray-600 mt-1">{packageData.name_cn}</p>
-                )}
-                <div className="flex items-center gap-3 mt-2 text-sm text-gray-600">
-                  <span>⏱️ {formatDuration(packageData.duration_minutes)}</span>
-                  <span>•</span>
-                  <span>💰 ₩{packageData.final_price.toLocaleString('ko-KR')}</span>
-                </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="닫기"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path 
-                    d="M18 6L6 18M6 6l12 12" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          
-          {/* Modal Content */}
-          <div className="p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {/* Description */}
-            {packageData.description_ko && (
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">패키지 소개</h4>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {packageData.description_ko}
-                </p>
-              </div>
+          {/* Modal Content - No header needed, Modal component has close button */}
+          <div className="p-6 space-y-6">
+            {/* Package Story Section */}
+            <PackageStorySection
+              packageCode={packageCode}
+              name={packageData.name_ko}
+              tagline={packageStory?.tagline}
+              story={packageStory?.story}
+              keyBenefits={packageStory?.keyBenefits}
+              changeLevel={packageStory?.changeLevel}
+              changeLevelText={packageStory?.changeLevelText}
+            />
+            
+            {/* Price and Time Bar */}
+            {priceBreakdown && (
+              <PriceTimeBar
+                packagePrice={priceBreakdown.total}
+                originalPrice={priceBreakdown.subtotal}
+                totalDuration={totalDuration}
+              />
             )}
             
-            {/* Treatment Timeline */}
-            <TreatmentTimeline
+            {/* Treatment List */}
+            <TreatmentList
               treatments={treatmentTimeline}
               onTreatmentClick={handleTreatmentClick}
             />
             
-            {/* Price Breakdown */}
-            {priceBreakdown && (
-              <PriceBreakdown {...priceBreakdown} />
-            )}
-            
-            {/* Benefits */}
-            {packageData.highlight_benefits?.ko && packageData.highlight_benefits.ko.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3">주요 효과</h4>
-                <div className="bg-green-50 rounded-lg p-4">
-                  <ul className="space-y-2">
-                    {packageData.highlight_benefits.ko.map((benefit, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-green-600 mt-0.5">✓</span>
-                        <span className="text-sm text-gray-700">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-            
-            {/* Doctor Info */}
+            {/* Doctor Info - Keep as is for now */}
             <DoctorInfo />
           </div>
           

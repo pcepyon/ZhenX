@@ -7,8 +7,16 @@ interface PackageItem {
   treatment: {
     code: string;
     name_ko: string;
+    name_cn: string;
     base_price: number;
     duration_minutes: number;
+  };
+  treatment_info?: {
+    category_ko: string;
+    category_cn: string;
+    simple_desc_ko: string;
+    simple_desc_cn: string;
+    icon_type: string;
   };
   quantity: number;
   display_order: number;
@@ -50,14 +58,20 @@ export function usePackageDetail(packageCode: string | null) {
     }
   }, [packageData]);
   
-  // Transform package items to timeline format
+  // Transform package items to timeline format with treatment info
   const treatmentTimeline = packageData?.package_items
     ?.sort((a, b) => a.display_order - b.display_order)
     .map(item => ({
       code: item.treatment.code,
       name: item.treatment.name_ko,
+      name_cn: item.treatment.name_cn,
       duration: item.treatment.duration_minutes,
-      quantity: item.quantity
+      quantity: item.quantity,
+      category: item.treatment_info?.category_ko || '',
+      category_cn: item.treatment_info?.category_cn || '',
+      description: item.treatment_info?.simple_desc_ko || '',
+      description_cn: item.treatment_info?.simple_desc_cn || '',
+      iconType: item.treatment_info?.icon_type || 'default'
     })) || [];
   
   return {
