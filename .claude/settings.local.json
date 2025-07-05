@@ -24,7 +24,13 @@
       "Bash(find:*)",
       "Bash(pnpm build)",
       "Bash(rm:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git push:*)",
+      "Bash(pnpm lint:*)",
+      "WebFetch(domain:cyan-ideate-95521275.figma.site)"
     ]
   },
   "enableAllProjectMcpServers": true,
