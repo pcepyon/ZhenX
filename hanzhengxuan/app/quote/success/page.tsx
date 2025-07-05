@@ -15,6 +15,8 @@ import {
   generateQRCode,
   generateShareMessage
 } from '@/lib/share';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FileText, MessageCircle, Home, CheckCircle2, Sparkles } from 'lucide-react';
 
 interface QuoteData {
   quote_id: string;
@@ -136,111 +138,188 @@ export default function QuoteSuccessPage() {
   
   if (isLoading || !quote) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-mint"></div>
-          <p className="mt-2 text-sm text-gray-600">견적서 정보를 불러오는 중...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto"></div>
+          <p className="mt-4 text-sm text-gray-600">견적서 정보를 불러오는 중...</p>
+        </motion.div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-mint-light via-gray-50 to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 overflow-hidden">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full opacity-20"
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            rotate: { duration: 50, repeat: Infinity, ease: "linear" },
+            scale: { duration: 20, repeat: Infinity, ease: "easeInOut" }
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-1/2 -left-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-emerald-100 to-teal-100 rounded-full opacity-20"
+          animate={{
+            rotate: -360,
+          }}
+          transition={{
+            duration: 40,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
       {/* Toast notification */}
-      {showToast && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in">
-          <div className="bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg">
-            <p className="text-sm">{toastMessage}</p>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div 
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+            initial={{ opacity: 0, y: -20, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -20, x: "-50%" }}
+          >
+            <div className="bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <p className="text-sm font-medium">{toastMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Main content */}
-      <main className="px-5 py-8">
-        <div className="max-w-md mx-auto">
+      <main className="relative px-5 py-8">
+        <div className="max-w-lg mx-auto">
           {/* Success animation */}
-          {showAnimation && (
-            <div className="mb-8">
-              <SuccessAnimation
-                onAnimationComplete={() => {
-                  setTimeout(() => setShowAnimation(false), 1000);
-                }}
-              />
-            </div>
-          )}
+          <AnimatePresence>
+            {showAnimation && (
+              <motion.div 
+                className="mb-8"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+              >
+                <SuccessAnimation
+                  onAnimationComplete={() => {
+                    setTimeout(() => setShowAnimation(false), 1000);
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           
           {/* Success message */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              견적서가 생성되었어요! 🎉
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: showAnimation ? 1 : 0.2 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 1, delay: showAnimation ? 1.2 : 0.4 }}
+              className="inline-block mb-4"
+            >
+              <div className="p-4 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-3xl">
+                <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+              </div>
+            </motion.div>
+            <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-3">
+              견적서가 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500 font-medium">생성</span>되었어요!
             </h1>
-            <p className="text-gray-600">
+            <motion.p 
+              className="text-lg text-gray-600 flex items-center justify-center gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: showAnimation ? 1.4 : 0.6 }}
+            >
+              <Sparkles className="w-5 h-5 text-emerald-500" />
               아래 정보를 확인하고 저장해주세요
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
           
           {/* Quote info card */}
-          <QuoteInfoCard quote={quote} className="mb-8" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: showAnimation ? 1.6 : 0.8 }}
+            className="mb-8"
+          >
+            <QuoteInfoCard quote={quote} />
+          </motion.div>
           
           {/* Action buttons */}
-          <div className="space-y-4 mb-8">
+          <motion.div 
+            className="space-y-4 mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: showAnimation ? 1.8 : 1 }}
+          >
             {/* Primary action - View quote */}
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handleViewQuote}
-              className="w-full"
-            >
-              견적서 자세히 보기
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleViewQuote}
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:shadow-lg transform transition-all group"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  견적서 자세히 보기
+                </span>
+              </Button>
+            </motion.div>
             
             {/* Share actions */}
-            <ShareActions
-              quoteId={quote.quote_id}
-              onShare={handleShare}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: showAnimation ? 2 : 1.2 }}
+            >
+              <ShareActions
+                quoteId={quote.quote_id}
+                onShare={handleShare}
+              />
+            </motion.div>
             
             {/* Consultation button */}
-            <button
-              onClick={handleConsultation}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <span className="font-medium">중국어 상담 받기</span>
-            </button>
-          </div>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <button
+                onClick={handleConsultation}
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-2xl hover:border-emerald-300 hover:shadow-md transition-all group"
+              >
+                <MessageCircle className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+                <span className="font-medium text-lg">중국어 상담 받기</span>
+              </button>
+            </motion.div>
+          </motion.div>
           
           {/* Back to home link */}
-          <div className="text-center">
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: showAnimation ? 2.2 : 1.4 }}
+          >
             <button
               onClick={handleBackToHome}
-              className="text-sm text-gray-600 hover:text-primary-mint transition-colors"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors group"
             >
-              처음으로 돌아가기
+              <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">처음으로 돌아가기</span>
             </button>
-          </div>
+          </motion.div>
         </div>
       </main>
-      
-      <style jsx global>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -1rem);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }

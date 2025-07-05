@@ -6,6 +6,8 @@ import { QuoteHeader } from '@/components/quote/QuoteHeader';
 import { QuotePackages } from '@/components/quote/QuotePackages';
 import { QuoteTotal } from '@/components/quote/QuoteTotal';
 import { QuoteFooter } from '@/components/quote/QuoteFooter';
+import { motion } from 'framer-motion';
+import { FileText, Calendar, User, Briefcase } from 'lucide-react';
 
 // Mock data for development
 const getMockQuoteData = (quoteId: string) => ({
@@ -100,17 +102,51 @@ export default function QuotePage() {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-mint"></div>
-          <p className="mt-2 text-sm text-gray-600">견적서를 불러오는 중...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            className="inline-block w-12 h-12 border-3 border-emerald-500 border-t-transparent rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p className="mt-4 text-sm text-gray-600">견적서를 불러오는 중...</p>
+        </motion.div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full opacity-10"
+          animate={{
+            rotate: 360,
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            rotate: { duration: 60, repeat: Infinity, ease: "linear" },
+            scale: { duration: 30, repeat: Infinity, ease: "easeInOut" }
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-1/2 -left-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-100 to-purple-100 rounded-full opacity-10"
+          animate={{
+            rotate: -360,
+          }}
+          transition={{
+            duration: 50,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
       {/* SEO metadata would be handled by generateMetadata in server component */}
       
       {/* Quote Header */}
@@ -121,75 +157,129 @@ export default function QuotePage() {
       />
       
       {/* Main content */}
-      <main className="max-w-4xl mx-auto px-5 py-8">
+      <main className="relative max-w-4xl mx-auto px-5 py-8">
         {/* Personal info (if provided) */}
         {quoteData.personal_info && (quoteData.personal_info.name || quoteData.personal_info.visit_date) && (
-          <section className="bg-white rounded-lg p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">고객 정보</h2>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+          <motion.section 
+            className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 p-6 mb-6 shadow-sm"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2.5 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl">
+                <User className="w-5 h-5 text-emerald-600" />
+              </div>
+              <h2 className="text-lg font-medium text-gray-800">고객 정보</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {quoteData.personal_info.name && (
-                <div>
-                  <span className="text-gray-600">이름:</span>
-                  <span className="ml-2 font-medium">{quoteData.personal_info.name}</span>
-                </div>
+                <motion.div 
+                  className="flex items-center gap-3 bg-gray-50 rounded-xl p-4"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="p-2 bg-white rounded-lg shadow-sm">
+                    <User className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">이름</p>
+                    <p className="font-medium text-gray-800">{quoteData.personal_info.name}</p>
+                  </div>
+                </motion.div>
               )}
               {quoteData.personal_info.visit_date && (
-                <div>
-                  <span className="text-gray-600">방문 예정일:</span>
-                  <span className="ml-2 font-medium">
-                    {new Date(quoteData.personal_info.visit_date).toLocaleDateString('ko-KR')}
-                  </span>
-                </div>
+                <motion.div 
+                  className="flex items-center gap-3 bg-gray-50 rounded-xl p-4"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="p-2 bg-white rounded-lg shadow-sm">
+                    <Calendar className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">방문 예정일</p>
+                    <p className="font-medium text-gray-800">
+                      {new Date(quoteData.personal_info.visit_date).toLocaleDateString('ko-KR')}
+                    </p>
+                  </div>
+                </motion.div>
               )}
             </div>
             {quoteData.personal_info.memo && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <span className="text-sm text-gray-600">메모:</span>
-                <p className="mt-1 text-sm text-gray-700">{quoteData.personal_info.memo}</p>
-              </div>
+              <motion.div 
+                className="mt-4 p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <p className="text-xs text-gray-600 mb-1">메모</p>
+                <p className="text-sm text-gray-700">{quoteData.personal_info.memo}</p>
+              </motion.div>
             )}
-          </section>
+          </motion.section>
         )}
         
         {/* Packages list */}
-        {quoteData.packages && (
-          <QuotePackages 
-            packages={quoteData.packages} 
-            className="mb-6"
-          />
-        )}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          {quoteData.packages && (
+            <QuotePackages 
+              packages={quoteData.packages} 
+              className="mb-6"
+            />
+          )}
+        </motion.div>
         
         {/* Total summary */}
-        <QuoteTotal
-          totalOriginalPrice={quoteData.total_price_krw}
-          totalFinalPrice={quoteData.final_price_krw}
-          discountAmount={quoteData.total_discount_krw}
-          exchangeRate={quoteData.exchange_rate}
-          className="mb-8"
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <QuoteTotal
+            totalOriginalPrice={quoteData.total_price_krw}
+            totalFinalPrice={quoteData.final_price_krw}
+            discountAmount={quoteData.total_discount_krw}
+            exchangeRate={quoteData.exchange_rate}
+            className="mb-8"
+          />
+        </motion.div>
         
         {/* Additional info */}
-        <section className="bg-blue-50 rounded-lg p-6 mb-8 print:break-before-avoid">
-          <h3 className="font-semibold text-gray-900 mb-3">안내사항</h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>본 견적서는 참고용이며, 실제 비용은 상담 후 확정됩니다.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>모든 가격은 VAT가 포함된 금액입니다.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>패키지 구성은 개인 상태에 따라 일부 조정될 수 있습니다.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>견적서 유효기간: {new Date(quoteData.expires_at).toLocaleDateString('ko-KR')}까지</span>
-            </li>
+        <motion.section 
+          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 print:break-before-avoid border border-blue-100"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2.5 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl">
+              <Briefcase className="w-5 h-5 text-blue-600" />
+            </div>
+            <h3 className="font-medium text-gray-800">안내사항</h3>
+          </div>
+          <ul className="space-y-3">
+            {[
+              "본 견적서는 참고용이며, 실제 비용은 상담 후 확정됩니다.",
+              "모든 가격은 VAT가 포함된 금액입니다.",
+              "패키지 구성은 개인 상태에 따라 일부 조정될 수 있습니다.",
+              `견적서 유효기간: ${new Date(quoteData.expires_at).toLocaleDateString('ko-KR')}까지`
+            ].map((text, index) => (
+              <motion.li 
+                key={index}
+                className="flex items-start gap-3 text-sm text-gray-700"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+              >
+                <span className="flex-shrink-0 w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-1.5" />
+                <span>{text}</span>
+              </motion.li>
+            ))}
           </ul>
-        </section>
+        </motion.section>
       </main>
       
       {/* Quote Footer */}

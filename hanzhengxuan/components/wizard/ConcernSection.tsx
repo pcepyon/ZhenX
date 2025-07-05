@@ -3,6 +3,7 @@
 import { ConcernItem } from './ConcernItem';
 import { Concern } from '@/hooks/api/useConcerns';
 import { Concern as SelectedConcern } from '@/store/types';
+import { motion } from 'framer-motion';
 
 interface ConcernSectionProps {
   categoryId: string;
@@ -41,19 +42,45 @@ export function ConcernSection({
   
   return (
     <div className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-2xl">{categoryIcon}</span>
-        <h3 className="text-lg font-semibold text-gray-900">{categoryName}</h3>
-      </div>
+      <motion.div 
+        className="flex items-center gap-3 mb-6"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
+        <span className="text-3xl">{categoryIcon}</span>
+        <h3 className="text-xl font-medium text-gray-800">{categoryName}</h3>
+        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+          {categoryConcerns.length}개 항목
+        </span>
+      </motion.div>
       
-      <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+      <motion.div 
+        className="space-y-3"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.05
+            }
+          }
+        }}
+      >
         {categoryConcerns.map((concern) => {
           const isSelected = selectedConcerns.some(
             sc => sc.id === concern.id
           );
           
           return (
-            <div key={concern.id} className="px-4">
+            <motion.div
+              key={concern.id}
+              variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0 }
+              }}
+            >
               <ConcernItem
                 id={concern.id}
                 name={concern.name}
@@ -61,10 +88,10 @@ export function ConcernSection({
                 checked={isSelected}
                 onChange={() => onToggleConcern(concern)}
               />
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </div>
   );
 }

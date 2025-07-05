@@ -1,4 +1,8 @@
+'use client';
+
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { FileText, Calendar, Clock } from 'lucide-react';
 
 interface QuoteHeaderProps {
   quoteId: string;
@@ -32,46 +36,92 @@ export function QuoteHeader({
   const isExpired = daysUntilExpiry < 0;
   
   return (
-    <header className={cn("bg-white border-b border-gray-200", className)}>
+    <motion.header 
+      className={cn("bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-sm", className)}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
       <div className="max-w-4xl mx-auto px-5 py-6">
         <div className="flex items-start justify-between">
           {/* Logo and company info */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-primary-mint rounded-full flex items-center justify-center">
+              <motion.div 
+                className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg"
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              >
                 <span className="text-white font-bold text-xl">韩</span>
-              </div>
+              </motion.div>
               <div>
                 <h1 className="font-bold text-xl text-gray-900">韩真选</h1>
-                <p className="text-sm text-gray-600">HanJinSeon Medical Beauty</p>
+                <p className="text-sm text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">HanJinSeon Medical Beauty</p>
               </div>
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 flex items-center gap-2">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               한국 의료미용 토탈 솔루션
             </p>
-          </div>
+          </motion.div>
           
           {/* Quote info */}
-          <div className="text-right">
-            <div className="mb-2">
-              <p className="text-xs text-gray-500">견적번호</p>
-              <p className="text-lg font-bold text-gray-900">{quoteId}</p>
-            </div>
-            <div className="text-sm">
-              <p className="text-gray-600">{createdDate} 발행</p>
+          <motion.div 
+            className="text-right"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.div 
+              className="mb-4 p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl"
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="flex items-center gap-2 justify-end mb-2">
+                <FileText className="w-4 h-4 text-gray-600" />
+                <p className="text-xs text-gray-500">견적번호</p>
+              </div>
+              <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">{quoteId}</p>
+            </motion.div>
+            <div className="space-y-2">
+              <motion.div 
+                className="flex items-center gap-2 justify-end text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                <p className="text-gray-600">{createdDate} 발행</p>
+              </motion.div>
               {isExpired ? (
-                <p className="text-red-600 font-medium">견적서 만료됨</p>
+                <motion.p 
+                  className="text-red-600 font-medium bg-red-50 px-3 py-1 rounded-lg inline-block"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  견적서 만료됨
+                </motion.p>
               ) : (
-                <p className={cn(
-                  "font-medium",
-                  daysUntilExpiry <= 2 ? "text-orange-600" : "text-gray-600"
-                )}>
-                  {expiresDate}까지 유효
-                  {daysUntilExpiry <= 2 && ` (${daysUntilExpiry}일 남음)`}
-                </p>
+                <motion.div 
+                  className="flex items-center gap-2 justify-end"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Clock className="w-3.5 h-3.5 text-gray-500" />
+                  <p className={cn(
+                    "font-medium text-sm",
+                    daysUntilExpiry <= 2 ? "text-orange-600 bg-orange-50 px-2 py-0.5 rounded" : "text-gray-600"
+                  )}>
+                    {expiresDate}까지 유효
+                    {daysUntilExpiry <= 2 && ` (${daysUntilExpiry}일 남음)`}
+                  </p>
+                </motion.div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
         
         {/* Print only - watermark for expired quotes */}
@@ -83,6 +133,6 @@ export function QuoteHeader({
           </div>
         )}
       </div>
-    </header>
+    </motion.header>
   );
 }
