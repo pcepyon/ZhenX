@@ -16,6 +16,7 @@
 3. **AI Recommendations** - 2-3 packages based on user input
 4. **Web Quotes** - Shareable quote pages with unique URLs
 5. **Mobile First** - Optimized for WeChat browser
+6. **Hospital Trust System** - Comprehensive hospital information with certifications
 
 ## Project Structure
 ```
@@ -40,11 +41,13 @@
   /treatment           # Treatment detail components
   /interest            # Wishlist components
   /quote               # Quote related components
+  /hospital            # Hospital info components
 /hooks
   /api                 # React Query hooks
   usePackageDetail.ts  # Package detail logic
   useTreatmentDetail.ts # Treatment detail logic
   useCreateQuote.ts    # Quote generation
+  useHospitalDetail.ts # Hospital detail logic
 /lib
   /api/client.ts       # API fetch wrapper
   /supabase            # DB client & types
@@ -98,12 +101,16 @@ Landing → Wizard (3 steps) → Loading → Recommendations → Package Details
 ## Database Tables
 - `categories` - Treatment categories (6 active)
 - `concerns` - Specific concerns per category (30 total)
-- `packages` - Curated packages (10 active)
+- `packages` - Curated packages (10 active, includes hospital_id)
 - `package_concerns` - Package-concern mappings
 - `user_sessions` - Anonymous sessions (24hr expiry)
 - `user_inputs` - Wizard step selections
 - `package_recommendations` - Generated recommendations
 - `quotes` - Generated quotes (7 day expiry)
+- `hospitals` - Hospital basic information
+- `hospital_certifications` - Hospital certification & credentials
+- `hospital_services` - Chinese-specialized services
+- `hospital_images` - Hospital photos
 
 ## Important Notes
 - Mobile-first design (max-width: 420px)
@@ -137,7 +144,7 @@ Landing → Wizard (3 steps) → Loading → Recommendations → Package Details
 ✅ Web quote page with QR code
 
 ### UI Components
-✅ Base component library (Button, Card, Modal, BottomSheet, etc.)
+✅ Base component library (Button, Card, Modal, BottomSheet, Badge, LoadingSkeleton, etc.)
 ✅ Wizard components (CategoryCard, ConcernItem, PersonalFactorItem)
 ✅ Package components (PackageCard, PriceBreakdown, TreatmentTimeline)
 ✅ Treatment detail bottom sheet
@@ -145,6 +152,7 @@ Landing → Wizard (3 steps) → Loading → Recommendations → Package Details
 ✅ Quote generation forms
 ✅ Success animations with confetti
 ✅ Share functionality (WeChat, KakaoTalk, QR)
+✅ Hospital trust system (HospitalInfoButton, HospitalInfoModal with 3-tab layout)
 
 ## Test Pages
 - `/test/components` - UI component showcase
@@ -174,6 +182,8 @@ Landing → Wizard (3 steps) → Loading → Recommendations → Package Details
 - Share functionality (clipboard, WeChat, KakaoTalk)
 - QR code generation for quotes
 - Print-friendly quote layout
+- Hospital trust indicators (government certification badges, trust scores)
+- Tab-based information architecture for complex data
 
 ### Business Logic
 - Anonymous session-based usage (24hr expiry)
@@ -181,6 +191,27 @@ Landing → Wizard (3 steps) → Loading → Recommendations → Package Details
 - Automatic 10% package discount
 - Fixed exchange rate (1 CNY = 190 KRW)
 - Quote validity period (7 days)
+
+## Hospital Trust System
+
+### Key Components
+- **HospitalInfoButton**: Entry point with pulse animation and trust messaging
+- **HospitalInfoModal**: 3-tab modal displaying comprehensive hospital information
+  - Tab 1: Certifications & Trust (government registration, licenses, pricing policy)
+  - Tab 2: Chinese Services (dedicated coordinators, WeChat support, hotline)
+  - Tab 3: Safety & Convenience (insurance, post-care protocol, location, photos)
+
+### Trust Indicators
+- Government-certified medical institution badge
+- 5-star trust score visualization
+- Verification checkmarks for each credential
+- Direct contact button (phone/WeChat)
+- Last updated timestamp for transparency
+
+### Database Integration
+- All packages now linked to hospitals via `hospital_id`
+- First hospital registered: Dr. Designer Clinic Yeongdeungpo
+- Comprehensive certification and service data storage
 
 ## Testing
 ```bash
