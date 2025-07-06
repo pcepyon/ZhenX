@@ -10,6 +10,7 @@ A medical tourism package curation service for Chinese visitors to Korea, simpli
 - **Web Quotes** - Generate and share quotes with unique URLs
 - **Mobile First** - Optimized for WeChat browser and mobile devices
 - **Bilingual Support** - Korean and Chinese language support
+- **Hospital Trust System** - Comprehensive hospital information with government certifications
 
 ## 🛠 Tech Stack
 
@@ -73,7 +74,8 @@ hanzhengxuan/
 │   ├── ui/              # Base UI library
 │   ├── landing/         # Landing page components
 │   ├── wizard/          # Wizard step components
-│   └── package/         # Package display components
+│   ├── package/         # Package display components
+│   └── hospital/        # Hospital trust components
 ├── hooks/               # Custom React hooks
 │   └── api/            # React Query API hooks
 ├── lib/                # Utility functions
@@ -90,7 +92,7 @@ hanzhengxuan/
 4. **Wizard Step 3** - Input personal preferences (age, budget, urgency)
 5. **AI Processing** - Personalized recommendations generated
 6. **Results Page** - View 2-3 recommended packages
-7. **Package Details** - Explore treatments and pricing
+7. **Package Details** - Explore treatments, pricing, and hospital credentials
 8. **Quote Generation** - Create shareable quotes
 9. **Share** - Share via WeChat, KakaoTalk, or QR code
 
@@ -99,9 +101,12 @@ hanzhengxuan/
 Key tables:
 - `categories` - Treatment categories (6 active)
 - `concerns` - Specific concerns per category (30 total)
-- `packages` - Curated treatment packages (10 active)
+- `packages` - Curated treatment packages (10 active, linked to hospitals)
 - `user_sessions` - Anonymous sessions (24hr expiry)
 - `quotes` - Generated quotes (7 day validity)
+- `hospitals` - Hospital information and credentials
+- `hospital_certifications` - Government certifications and licenses
+- `hospital_services` - Chinese-specialized services
 
 ## 🌐 API Endpoints
 
@@ -119,11 +124,20 @@ Key tables:
 - `POST /api/v1/sessions/[id]/recommendations` - Generate recommendations
 - `POST /api/v1/sessions/[id]/quotes` - Create quote
 
+## 🏥 Hospital Trust System
+
+- **Government Certifications** - Display of official medical institution registrations
+- **Trust Score Visualization** - 5-star rating based on credentials
+- **Chinese Services** - Dedicated coordinators, WeChat support, and hotlines
+- **Safety Protocols** - Medical insurance and post-care management
+- **Direct Contact** - One-click phone/WeChat connection
+
 ## 💰 Pricing
 
 - Fixed exchange rate: 1 CNY = 190 KRW
 - Automatic 10% package discount applied
 - Three price tiers: Basic, Premium, Luxury
+- Same price policy for Chinese and Korean patients
 
 ## 🧪 Development
 
