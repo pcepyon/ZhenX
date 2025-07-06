@@ -8,8 +8,9 @@ import { PriceBreakdown } from './PriceBreakdown';
 import { TreatmentList } from './TreatmentList';
 import { PackageStorySection } from './PackageStorySection';
 import { PriceTimeBar } from './PriceTimeBar';
-import { DoctorInfo } from './DoctorInfo';
 import { TreatmentBottomSheet } from '@/components/treatment/TreatmentBottomSheet';
+import { HospitalInfoButton } from '@/components/hospital/HospitalInfoButton';
+import { HospitalInfoModal } from '@/components/hospital/HospitalInfoModal';
 import { usePackageDetail } from '@/hooks/usePackageDetail';
 import { useAppStore } from '@/store/useAppStore';
 import { packageStories } from '@/lib/data/packageStories';
@@ -31,6 +32,7 @@ export function PackageDetailModal({
   const [isLiked, setIsLiked] = useState(packageCode ? isInterested(packageCode) : false);
   const [selectedTreatment, setSelectedTreatment] = useState<string | null>(null);
   const [isTreatmentSheetOpen, setIsTreatmentSheetOpen] = useState(false);
+  const [isHospitalModalOpen, setIsHospitalModalOpen] = useState(false);
   
   if (!packageCode) return null;
   
@@ -101,8 +103,13 @@ export function PackageDetailModal({
               onTreatmentClick={handleTreatmentClick}
             />
             
-            {/* Doctor Info - Keep as is for now */}
-            <DoctorInfo />
+            {/* Hospital Info Button */}
+            {packageData?.hospital_id && (
+              <HospitalInfoButton onClick={() => {
+                console.log('Hospital button clicked, hospital_id:', packageData.hospital_id);
+                setIsHospitalModalOpen(true);
+              }} />
+            )}
           </div>
           
           {/* Modal Footer */}
@@ -164,6 +171,13 @@ export function PackageDetailModal({
         treatmentCode={selectedTreatment}
         isOpen={isTreatmentSheetOpen}
         onClose={handleTreatmentSheetClose}
+      />
+      
+      {/* Hospital Info Modal */}
+      <HospitalInfoModal
+        hospitalId={packageData?.hospital_id || null}
+        isOpen={isHospitalModalOpen}
+        onClose={() => setIsHospitalModalOpen(false)}
       />
     </Modal>
   );

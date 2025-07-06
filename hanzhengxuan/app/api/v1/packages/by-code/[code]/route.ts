@@ -21,11 +21,12 @@ export async function GET(
     
     const supabase = await createClient()
     
-    // Get package details with package items and treatments
+    // Get package details with package items, treatments, and hospital info
     const { data: packageData, error } = await supabase
       .from('packages')
       .select(`
         *,
+        hospital_id,
         package_items (
           *,
           treatment:treatments_base (
