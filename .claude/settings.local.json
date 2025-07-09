@@ -30,7 +30,8 @@
       "Bash(git config:*)",
       "Bash(git push:*)",
       "Bash(pnpm lint:*)",
-      "WebFetch(domain:cyan-ideate-95521275.figma.site)"
+      "WebFetch(domain:cyan-ideate-95521275.figma.site)",
+      "WebFetch(domain:supabase.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
